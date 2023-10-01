@@ -10,7 +10,7 @@
 </head>
 
 <body class="antialiased">
-
+    {{ $slot }}
 </body>
-    <div class="text-2xl">Ciao</div>
+
 </html>
