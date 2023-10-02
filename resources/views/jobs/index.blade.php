@@ -22,7 +22,10 @@
                 </div>
                 {{-- 3 --}}
                 <div class="mb-1 font-semibold">Experience
-                    <x-radio-group :options="App\Models\Job::$experience" name="experience" />
+                    <x-radio-group :options="array_combine(
+                        array_map('ucfirst', App\Models\Job::$experience),
+                        App\Models\Job::$experience,
+                    )" name="experience" />
                 </div>
                 {{-- 4 --}}
                 <div class="mb-1 font-semibold">Category
