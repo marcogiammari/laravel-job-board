@@ -10,14 +10,15 @@
         <form action="{{ route('job.application.store', $job) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-4">
-                <label for="expected_salary" class="mb-2 block text-sm font-medium text-slate-900">Expected Salary</label>
+                {{-- nb: usiamo i due punti per il booleano perché deve essere interpretato come linguaggio php anziché html --}}
+                <x-label :required="true" for="expected_salary">Expected Salary</x-label>
                 <x-text-input type="number" name="expected_salary" />
             </div>
 
             <div class="mb-4">
-                <label class="mb-2 block text-sm font-medium text-slate-900">
+                <x-label :required="true" for="cv">
                     Upload CV
-                </label>
+                </x-label>
                 <x-text-input type="file" name="cv" />
             </div>
 
