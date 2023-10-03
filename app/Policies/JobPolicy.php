@@ -31,7 +31,7 @@ class JobPolicy
     // una JobApplication non può esistere senza un Job
     public function apply(User $user, Job $job): bool
     {
-        return false;
+        return !$job->hasUserApplied($user);
     }
 
     // ritorniamo false per le action/funzionalità non presenti sull'app
