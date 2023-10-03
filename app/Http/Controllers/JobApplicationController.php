@@ -13,6 +13,9 @@ class JobApplicationController extends Controller
      */
     public function create(Job $job)
     {
+        // non serve mandare lo user, laravel lo fa in automatico
+        $this->authorize('apply', $job);
+
         return view('job_applications.create', ['job' => $job]);
     }
 
@@ -21,6 +24,8 @@ class JobApplicationController extends Controller
      */
     public function store(Job $job, Request $request)
     {
+        $this->authorize('apply', $job);
+
         $job->jobApplications()->create([
             'user_id' => $request->user()->id,
             ...$request->validate([
