@@ -28,8 +28,13 @@ class MyJobApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    // implicit binding: il parametro deve chiamarsi come il parametro della rotta
+    // {my-job-application/561} === $myJobApplication
+    // kebab-case e camel-case sono intercambiabili
+    public function destroy(JobApplication $myJobApplication)
     {
-        //
+        $myJobApplication->delete();
+
+        return redirect()->back()->with('success', 'Job application removed');
     }
 }
