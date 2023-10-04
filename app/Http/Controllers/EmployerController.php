@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EmployerController extends Controller
@@ -25,7 +26,8 @@ class EmployerController extends Controller
      */
     public function store(Request $request)
     {
-        auth()->user()->employer()->create(
+        $user = request()->user();
+        $user->employer()->create(
             $request->validate([
                 // controlla che l'employer sia unique
                 'company_name' => 'required|min:3|unique:employers,company_name'
