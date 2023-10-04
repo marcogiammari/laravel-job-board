@@ -12,7 +12,11 @@ class MyJobController extends Controller
      */
     public function index()
     {
-        return view('my_job.index');
+        $jobs = request()->user()->employer->jobs()
+            ->with('employer', 'jobApplications', 'jobApplications.user')
+            ->get();
+
+        return view('my_job.index', ['jobs' => $jobs]);
     }
 
     /**
