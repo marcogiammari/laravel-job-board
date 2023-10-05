@@ -16,6 +16,7 @@ class MyJobController extends Controller
         $this->authorize('viewAnyEmployer', Job::class);
         $jobs = request()->user()->employer->jobs()
             ->with('employer', 'jobApplications', 'jobApplications.user')
+            ->withTrashed()
             ->get();
 
         return view('my_job.index', ['jobs' => $jobs]);
@@ -71,6 +72,7 @@ class MyJobController extends Controller
      */
     public function destroy(Job $myJob)
     {
+        $this->authorize('delete', $myJob);
         $myJob->delete();
 
         return redirect()->route('my-jobs.index')

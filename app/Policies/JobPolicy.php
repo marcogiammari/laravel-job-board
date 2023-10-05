@@ -72,8 +72,11 @@ class JobPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Job $job): bool
+    public function delete(User $user, Job $job): bool|Response
     {
+        if ($job->jobApplications()->count() > 0) {
+            return Response::deny('Cannot delete a job with applications');
+        }
         return $job->employer->user_id === $user->id;
     }
 
@@ -90,6 +93,9 @@ class JobPolicy
      */
     public function forceDelete(User $user, Job $job): bool
     {
+        if ($job->jobApplications()->count() > 0) {
+            return Response::deny('Cannot delete a job with applications');
+        }
         return $job->employer->user_id === $user->id;
     }
 }
