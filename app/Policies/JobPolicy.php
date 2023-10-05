@@ -18,6 +18,11 @@ class JobPolicy
         return true;
     }
 
+    public function viewAnyEmployer(User $user): bool
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can view the model.
      */
@@ -41,15 +46,27 @@ class JobPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->employer !== null;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Job $job): bool
+    public function update(User $user, Job $job): bool|Response
     {
-        return false;
+        if ($job->employer->user_id !== $user->id) {
+            return false;
+        }
+
+        // se usi jobApplications come property (senza parentesi) laravel andrà a prendere tutti i model e solo alla fine ritornerà il conteggio:
+        // select * from `job_applications` where `job_applications`.`job_id` = 102 and `job_applications`.`job_id` is not null
+        // se usi jobApplications() come method partirà una query COUNT * etc molto più efficiente:
+        // select count(*) as aggregate from `job_applications` where `job_applications`.`job_id` = 102 and `job_applications`.`job_id` is not null
+
+        if ($job->jobApplications()->count() > 0) {
+            return Response::deny('Cannot change a job with applications');
+        }
+        return true;
     }
 
     /**
@@ -57,7 +74,7 @@ class JobPolicy
      */
     public function delete(User $user, Job $job): bool
     {
-        return false;
+        return $job->employer->user_id === $user->id;
     }
 
     /**
@@ -65,7 +82,7 @@ class JobPolicy
      */
     public function restore(User $user, Job $job): bool
     {
-        return false;
+        return $job->employer->user_id === $user->id;
     }
 
     /**
@@ -73,6 +90,6 @@ class JobPolicy
      */
     public function forceDelete(User $user, Job $job): bool
     {
-        return false;
+        return $job->employer->user_id === $user->id;
     }
 }

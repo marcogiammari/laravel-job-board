@@ -13,6 +13,7 @@ class MyJobController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAnyEmployer', Job::class);
         $jobs = request()->user()->employer->jobs()
             ->with('employer', 'jobApplications', 'jobApplications.user')
             ->get();
@@ -25,6 +26,7 @@ class MyJobController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Job::class);
         return view('my_job.create');
     }
 
@@ -33,6 +35,8 @@ class MyJobController extends Controller
      */
     public function store(JobRequest $request)
     {
+        $this->authorize('create', Job::class);
+
         // creiamo il job tramite la relationship employer (NB: senza parentesi perché la usiamo come proprietà)
         // così facendo sarà automaticamente associato all'employer/utente autenticato
         $request->user()->employer->jobs()->create($request->validated());
@@ -46,6 +50,7 @@ class MyJobController extends Controller
     // $myJob come nel nome della rotta -> my-jobs/{my_job}
     public function edit(Job $myJob)
     {
+        $this->authorize('update', $myJob);
         return view('my_job.edit', ['job' => $myJob]);
     }
 
@@ -54,6 +59,7 @@ class MyJobController extends Controller
      */
     public function update(JobRequest $request, Job $myJob)
     {
+        $this->authorize('update', $myJob);
         $myJob->update($request->validated());
 
         return redirect()->route('my-jobs.index')
